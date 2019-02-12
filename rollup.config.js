@@ -4,6 +4,8 @@ import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 import multiEntry from 'rollup-plugin-multi-entry';
 import postcss from 'rollup-plugin-postcss';
+import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
 
 // Post CSS plugins
 import autoprefixer from 'autoprefixer';
@@ -25,28 +27,26 @@ function createBundle(name, entry, moduleName) {
           uuid: ['v4'],
         },
       }),
+      builtins(),
+      globals(),
       multiEntry(),
       resolve({ main: true, browser: true }),
       typescript({}),
       json(),
       postcss({
         extract: `./dist/${name}.css`,
-          plugins: [autoprefixer(), customProperties(), colorFunction()],
-          extensions: [ '.css' ],
+        plugins: [autoprefixer(), customProperties(), colorFunction()],
+        extensions: ['.css'],
       }),
     ],
   };
 }
 
 export default [
-  createBundle(
-    'eve-libraries',
-    ['./ts/main.ts'],
-    'eve_libraries',
-  ),
-//  createBundle(
-//    'programs/editor',
-//    ['./examples/editor/**/*.css'],
-//    'eve_programs_editor',
-//  ),
+  createBundle('eve-libraries', ['./ts/main.ts'], 'eve_libraries'),
+  //  createBundle(
+  //    'programs/editor',
+  //    ['./examples/editor/**/*.css'],
+  //    'eve_programs_editor',
+  //  ),
 ];
